@@ -13,16 +13,16 @@
   (fn [state start] ;; -> [state-new end]
     (let [
            state-tr (transient state)
-           state-new (do
-                       (loop [pos start]
-                         (let [parsed (parse-line file-vec pos)]
-                           (if (parsed :cond?) pos
-                             (do
-                               (merge! state-tr
-                                     (proc-line (nth file-vec pos)
-                                                graph-agent)))
-                             (recur (alt-fns ...))
-                         )
-                       (persistent! state-tr))
-           end TODO]
+           [state-new end] (do
+                       (let [
+                              end-found (loop [pos start]
+                                          (let [parsed (parse-line file-vec pos)]
+                                            (if (parsed :cond?) pos
+                                              (do
+                                                (merge! state-tr
+                                                        (proc-line (nth file-vec pos)
+                                                                   graph-agent)))
+                                              (recur
+                                                (or (:target parsed) (inc pos)) ))))]
+                         [(persistent! state-tr) end-found])
       [state-new end])))
