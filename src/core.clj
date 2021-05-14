@@ -12,7 +12,7 @@
   [file-vec graph-agent] ;; -> (fn-type [state start] [state-new end])
   (fn [state start] ;; -> [state-new end]
     (let [
-           state-tr (transient state)
+           state-tr (transient state)]
       (let [
              end-found (loop [pos start]
                          (let [parsed (parse-line file-vec pos)]
