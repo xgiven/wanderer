@@ -1,5 +1,6 @@
 (ns wanderer.core
   (:require iota
+            [clojure.core.reducers :as r]
             [instaparse.core :as insta]))
 
 (declare proc-file proc-segm parse-instr mk-linker)
@@ -12,7 +13,11 @@
    #'clojure.core/shutdown-agents at the end of your
    program. "
   [filename]
-  (throw (UnsupportedOperationException. "[#'wanderer.core/proc-file] is not yet implemented")))
+  (let [
+         file-vec (iota/vec filename)]
+    (loop [state {}]
+      (let [])
+      )))
 
 (defn proc-segm
   "Process a segment of code (up until a conditional) by
@@ -27,7 +32,8 @@
            state-tr (transient state)]
       (let [
              end-found (loop [pos start]
-                         (let [parsed (parse-instr (nth file-vec pos))] ;; EXTERN #'wanderer.core/parse-instr
+                         (let [
+                                parsed (parse-instr (nth file-vec pos))] ;; EXTERN #'wanderer.core/parse-instr
                            (if ((comp :conditional :flow) parsed) pos ;; Only process unconditional instructions
                              (do
                                (run! (partial apply assoc! state-tr) ;; Update the current state
