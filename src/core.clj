@@ -3,10 +3,15 @@
             [instaparse.core :as insta]))
 
 (def process-segm
-  [file-vec] ;; -> (fn-type [state start] [state-new end])
+  "Process a segment of code (up until a conditional) by
+   updating the state internally (as a transient) and
+   updating the graph by sending linker functions to
+   the agent that stores the current graph (with mk-linker)"
+  [file-vec graph-agent] ;; -> (fn-type [state start] [state-new end])
   (fn [state start] ;; -> [state-new end]
     (let [
-           tr (transient state)
-           state-new (persistent! TODO)
+           state-tr (transient state)
+           state-new (do
+                       (persistent! state-tr))
            end TODO]
       [state-new end])))
