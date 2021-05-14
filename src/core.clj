@@ -16,7 +16,9 @@
   (let [
          file-vec (iota/vec filename)]
     (loop [state {}]
-      (let [])
+      (let [
+             a b]
+        (c...))
       )))
 
 (defn proc-segm
