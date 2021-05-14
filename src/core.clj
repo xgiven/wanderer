@@ -2,7 +2,7 @@
   (:require iota
             [instaparse.core :as insta]))
 
-(def process-segm
+(def proc-segm
   "Process a segment of code (up until a conditional) by
    updating the state internally (as a transient),
    updating the graph by sending linker functions to
@@ -14,6 +14,15 @@
     (let [
            state-tr (transient state)
            state-new (do
+                       (loop [pos start]
+                         (let [parsed (parse-line file-vec pos)]
+                           (if (parsed :cond?) pos
+                             (do
+                               (merge! state-tr
+                                     (proc-line (nth file-vec pos)
+                                                graph-agent)))
+                             (recur (alt-fns ...))
+                         )
                        (persistent! state-tr))
            end TODO]
       [state-new end])))
