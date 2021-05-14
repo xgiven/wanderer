@@ -34,8 +34,8 @@
            state-tr (transient state)]
       (let [
              end-found (loop [pos start]
-                         (let [
-                                parsed (parse-instr (nth file-vec pos))] ;; EXTERN #'wanderer.core/parse-instr
+                         (if-let [
+                                   parsed (parse-instr (nth file-vec pos nil))] ;; EXTERN #'wanderer.core/parse-instr
                            (if ((comp :conditional :flow) parsed) pos ;; Only process unconditional instructions
                              (do
                                (run! (partial apply assoc! state-tr) ;; Update the current state
@@ -44,7 +44,8 @@
                                      (apply mk-linker ;; EXTERN #'wanderer.core/mk-linker
                                             ((juxt :sources :target) parsed))) ;; [sources target]
                                (recur
-                                 (or (:flow parsed) (inc pos)))))))] ;; If no target exists
+                                 (or (:flow parsed) (inc pos)))))
+                           nil))] ;; Yield nil if the file has been exhausted
         [(persistent! state-tr) end-found]))))
 
 (defn mk-linker
