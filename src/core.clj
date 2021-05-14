@@ -15,14 +15,22 @@
            state-tr (transient state)]
       (let [
              end-found (loop [pos start]
-                         (let [parsed (parse-line (nth file-vec pos))] ;; extern 'wanderer.core/parse-line
-                           (if (parsed :flow/condition) pos
+                         (let [parsed (parse-instr (nth file-vec pos))] ;; extern 'wanderer.core/parse-instr
+                           (if ((comp :conditional :flow) parsed) pos ;; Only process unconditional instructions
                              (do
-                               (run! (partial apply assoc! state-tr)
+                               (run! (partial apply assoc! state-tr) ;; Update the current state
                                      (map :mut parsed))
-                               (send graph-agent
-                                     (mk-linker ;; extern 'wanderer.core/mk-linker
-                                       ((juxt :op/sources :op/target) parsed)))
+                               (send graph-agent ;; Build the graph
+                                     (apply mk-linker ;; extern 'wanderer.core/mk-linker
+                                            ((juxt :sources :target) parsed))) ;; [sources target]
                                (recur
-                                 (or (:flow/target parsed) (inc pos)))))))]
+                                 (or (:flow parsed) (inc pos)))))))] ;; If no target exists
         [(persistent! state-tr) end-found]))))
+
+(defn mk-linker
+  "Generate a linker function that adds the linkages
+   represented by a new parsed instruction"
+  [sources target]
+  (apply comp ;; Compose all transformations
+         (map (fn [source] #(assoc % source target))
+              sources))) ;; From sources
