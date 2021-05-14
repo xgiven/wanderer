@@ -3,25 +3,24 @@
             [clojure.core.reducers :as r]
             [instaparse.core :as insta]))
 
-(declare proc-file proc-segm parse-instr mk-linker)
+(declare proc proc-segm parse-instr mk-linker)
 
 (defn proc-file
-  "Process a file, using (#'wanderer.core/mk-linker),
+  "Process a file, using (#'wanderer.core/proc-segm),
    by recursively forking when a conditional is reached,
    and continuing in both cases independently. Note that
    this uses agents, so you have to remember to call
    #'clojure.core/shutdown-agents at the end of your
-   program. "
-  [filename]
-  (let [
-         file-vec (iota/vec filename)
-         graph-agent (agent {})]
-    (let [
-           segm-proc (proc-segm file-vec graph-agent)]
-      (loop [state {}]
-        (let [
-               [new-state end] (proc-segm state start)]
-          (c...))))))
+   program. Returns the agent. "
+  ([filename]
+   (let [
+          file-vec (iota/vec filename)
+          graph-agent (agent {})]
+     (let [
+            segm-proc (proc-segm file-vec graph-agent)]
+      (do (proc segm-proc 0) graph-agent))))
+  ([segm-proc depth]
+   ()))
 
 (defn proc-segm
   "Process a segment of code (up until a conditional) by
