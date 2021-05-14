@@ -4,7 +4,7 @@
 
 (declare proc-file proc-segm parse-instr mk-linker)
 
-(def proc-file
+(defn proc-file
   "Process a file, using (#'wanderer.core/mk-linker),
    by recursively forking when a conditional is reached,
    and continuing in both cases independently. Note that
@@ -14,7 +14,7 @@
   [filename]
   (throw (UnsupportedOperationException. "[#'wanderer.core/proc-file] is not yet implemented")))
 
-(def proc-segm
+(defn proc-segm
   "Process a segment of code (up until a conditional) by
    updating the state internally (as a transient),
    updating the graph by sending linker functions to
