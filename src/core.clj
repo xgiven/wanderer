@@ -15,12 +15,14 @@
            state-tr (transient state)]
       (let [
              end-found (loop [pos start]
-                         (let [parsed (parse-line file-vec pos)]
-                           (if (parsed :cond?) pos
+                         (let [parsed (parse-line (nth file-vec pos)] ;; extern 'parse-line
+                           (if (parsed :flow/cond?) pos
                              (do
-                               (merge! state-tr
-                                       (proc-line (nth file-vec pos)
-                                                  graph-agent))
+                               (run! (partial apply assoc! state-tr)
+                                     (map :mut parsed))
+                               (send graph-agent
+                                     (mk-linker
+                                       ((juxt :op/sources :op/target) parsed)))
                                (recur
-                                 (or (:target parsed) (inc pos)))))))]
+                                 (or (:flow/target parsed) (inc pos)))))))]
         [(persistent! state-tr) end-found]))))
