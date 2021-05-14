@@ -14,12 +14,14 @@
    program. "
   [filename]
   (let [
-         file-vec (iota/vec filename)]
-    (loop [state {}]
-      (let [
-             a b]
-        (c...))
-      )))
+         file-vec (iota/vec filename)
+         graph-agent (agent {})]
+    (let [
+           segm-proc (proc-segm file-vec graph-agent)]
+      (loop [state {}]
+        (let [
+               [new-state end] (proc-segm state start)]
+          (c...))))))
 
 (defn proc-segm
   "Process a segment of code (up until a conditional) by
