@@ -20,13 +20,15 @@
      (let [
             segm-proc (proc-segm file-vec graph-agent)]
       (do
-        (proc segm-proc {} 0)
+        (proc segm-proc {} 0 0)
         (await graph-agent)
         @graph-agent))))
-  ([segm-proc state depth]
-   (do
-     (segm-proc )
-     )))
+  ([segm-proc state pos depth]
+   (let [
+          [state-new end-found] (segm-proc state)]
+     (if (or (nil? end-found) (> depth 50)) nil
+       ()
+       ))))
 
 (defn proc-segm
   "Process a segment of code (up until a conditional) by
@@ -50,6 +52,8 @@
                                (send graph-agent ;; Build the graph
                                      (apply mk-linker flow-sources ;; EXTERN #'wanderer.core/mk-linker
                                             ((juxt :sources :target) parsed))) ;; [sources target]
+                               (send graph-agent ;; Build the graph
+                                     )
                                (recur
                                  (or (:flow parsed) (inc pos)))))
                            nil))] ;; Yield nil if the file has been exhausted
