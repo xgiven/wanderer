@@ -25,9 +25,12 @@
         @graph-agent))))
   ([segm-proc state pos depth]
    (let [
-          [state-new end-found] (segm-proc state)]
+          [state-new end-found] (segm-proc pos state)]
      (if (or (nil? end-found) (> depth 50)) nil
-       ()
+       (let [
+              [] end-found]
+         (proc state end-found)
+         )
        ))))
 
 (defn proc-segm
@@ -45,7 +48,7 @@
              end-found (loop [pos start]
                          (if-let [
                                    parsed (parse-instr (nth file-vec pos nil))] ;; EXTERN #'wanderer.core/parse-instr
-                           (if ((comp :conditional :flow) parsed) pos ;; Only process unconditional instructions
+                           (if ((comp :conditional :flow) parsed) [pos parsed] ;; Only process unconditional instructions
                              (do
                                (run! (partial apply assoc! state-tr) ;; Update the current state
                                      (map :mut parsed))
