@@ -23,15 +23,20 @@
         (proc segm-proc {} 0 0)
         (await graph-agent)
         @graph-agent))))
-  ([segm-proc state pos depth]
+  ([segm-proc state pos flow-sources depth]
    (let [
-          [state-new end-found] (segm-proc pos state)]
+          [state-new end-found] (segm-proc pos state flow-sources)]
      (if (or (nil? end-found) (> depth 50)) nil
        (let [
-              [] end-found]
-         (proc state end-found)
-         )
-       ))))
+              [pos-end parsed] end-found
+              flow-sources-new (conj flow-sources (:target parsed))]
+         (do
+           (let [
+                  pos-new pos-end]
+             (proc state-new pos-new flow-sources-new (inc depth)))
+           (let [
+                  pos-new ((comp :redir :flow) parsed)]
+             (proc state-new pos-new flow-sources-new (inc depth)))))))))
 
 (defn proc-segm
   "Process a segment of code (up until a conditional) by
@@ -41,7 +46,7 @@
    (with #'wanderer.core/mk-linker), and finally, returning
    the new state as well as where it left off. "
   [file-vec graph-agent] ;; -> (fn-type [state start] [state-new end])
-  (fn [state start] ;; -> [state-new end]
+  (fn [state start flow-sources] ;; -> [state-new end]
     (let [
            state-tr (transient state)]
       (let [
@@ -53,10 +58,8 @@
                                (run! (partial apply assoc! state-tr) ;; Update the current state
                                      (map :mut parsed))
                                (send graph-agent ;; Build the graph
-                                     (apply mk-linker flow-sources ;; EXTERN #'wanderer.core/mk-linker
+                                     (apply mk-linker flow-sources;; EXTERN #'wanderer.core/mk-linker
                                             ((juxt :sources :target) parsed))) ;; [sources target]
-                               (send graph-agent ;; Build the graph
-                                     )
                                (recur
                                  (or (:flow parsed) (inc pos)))))
                            nil))] ;; Yield nil if the file has been exhausted
