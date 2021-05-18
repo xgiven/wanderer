@@ -30,7 +30,7 @@
        (let [
               [pos-end parsed] end-found
               flow-sources-new (conj flow-sources (:target parsed))]
-         (do
+         (do ;; Not currently multithreaded, just asynchronous
            (let [
                   pos-new pos-end]
              (proc state-new pos-new flow-sources-new (inc depth)))
