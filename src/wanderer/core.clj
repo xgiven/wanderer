@@ -95,7 +95,8 @@
 
 (s/fdef proc-asm
   :args (s/cat ::fname-asm string?)
-  :ret ::graph)
+  :ret (partial satisfies? ;; impl WritePort<::graph>
+                clojure.core.async.impl.protocols/WritePort))
 
 (s/def ::proc-segm-fn
   (s/fspec :args (s/cat ::state ::state
