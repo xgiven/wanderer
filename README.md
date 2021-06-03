@@ -1,6 +1,8 @@
 # wanderer
 Represent a binary as a graph (of opcodes)
 
+<br>
+
 To process a single file (highly parallelized), use `#'wanderer.core/proc-file`:<br>
 ```clojure
 (s/fdef proc-file
