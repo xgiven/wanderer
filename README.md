@@ -10,6 +10,7 @@ To process a single file (highly parallelized), use `#'wanderer.core/proc-file`:
 ```
 
 To process multiple files, don't just run `#'wanderer.core/proc-file` over and over again.<br>
+
 Instead, use `#'wanderer.core/proc-files`:<br>
 
 ```clojure
