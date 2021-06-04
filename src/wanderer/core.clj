@@ -196,4 +196,4 @@
 (defn mk-linker
   [sources target]
   #(update % target
-           (...))) ;; TODO
+           (partial clojure.set/union sources)))
