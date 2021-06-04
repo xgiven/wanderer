@@ -7,16 +7,21 @@
             [clojure.spec.gen.alpha :as gen]))
 
 ;; functions (provided)
-(declare proc)
+(declare proc-file proc-files)
+;;       TODO      TODO
+
 ;; functions (provided, but for internal use)
 (declare proc-asm proc-segm parse-instr mk-linker)
+;;       DONE     TODO      TODO        TODO
+
 ;; constants
 (declare num-opcodes
          max-cond-depth trampoline-channel-size)
 
-;; constant definitions
+;; constant definitions (specific to system context)
 (def num-opcodes 900)
 
+;; constant definitions (operational parameters)
 (def max-cond-depth 10)
 (def trampoline-channel-size 100)
 
