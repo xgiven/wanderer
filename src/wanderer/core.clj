@@ -1,6 +1,7 @@
 (ns wanderer.core
-  (:require iota
+  (:require [iota]
             [instaparse.core :as insta]
+            [clojure.set]
             [clojure.core.reducers :as r]
             [clojure.core.async :as async]
             [clojure.spec.alpha :as s]
