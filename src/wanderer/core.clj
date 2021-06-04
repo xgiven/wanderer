@@ -166,10 +166,10 @@
          (async/go-loop [
                          target ::trampoline-channel
                          active? true]
-           (async/<! (timeout 500 #_ms))
+           (async/<! (async/timeout 500 #_ms))
            (case target
              ::trampoline-channel
-             (if (zero? @active-count)
+             (if (zero? @num-active)
                (do
                  (async/close! trampoline-channel)
                  (recur ::graph-agent false))
@@ -184,6 +184,6 @@
                  (do
                    (await graph-agent)
                    (async/>! result-channel @graph-agent))
-                 (recur ::graph-agent true)))
-           result-channel))))))
+                 (recur ::graph-agent true)))))
+           result-channel)))))
 
