@@ -12,7 +12,7 @@
 
 ;; functions (provided, but for internal use)
 (declare proc-asm proc-segm parse-instr mk-linker)
-;;       DONE     TODO      TODO        TODO
+;;       DONE     TODO      TODO        PROG
 
 ;; constants
 (declare num-opcodes
@@ -192,3 +192,7 @@
                  (recur ::graph-agent true)))))
            result-channel)))))
 
+(defn mk-linker
+  [sources target]
+  #(update % target
+           (...))) ;; TODO
