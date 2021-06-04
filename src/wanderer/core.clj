@@ -13,7 +13,7 @@
 
 ;; functions (provided, but for internal use)
 (declare proc-asm proc-segm parse-instr mk-linker)
-;;       DONE     TODO      TODO        PROG
+;;       DONE     TODO      TODO        DONE
 
 ;; constants
 (declare num-opcodes
